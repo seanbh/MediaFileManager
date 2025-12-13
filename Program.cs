@@ -27,8 +27,8 @@ int noDateCount = 0;
 int couldNotMoveCount = 0;
 int offsetHours = 5;
 
-string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\MET 2025";
-string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Stage\MET 2025";
+string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
+string photoDirectoryPath = $@"F:\Pictures\2025";
 
 if (doVideosByQuarter)
 {
@@ -174,27 +174,27 @@ DateTime? GetDateUsingExif(string filePath)
     }
 }
 
-bool GroupByQuarterAndVacation(string directoryPath)
+bool GroupByQuarterAndVacation(string sourceDirectoryPath)
 {
-    if (!Path.Exists(directoryPath))
+    if (!Path.Exists(sourceDirectoryPath))
     {
-        Console.WriteLine($"Path {directoryPath} does not exist");
+        Console.WriteLine($"Path {sourceDirectoryPath} does not exist");
         return false;
     }
 
-    string vacationPath = Path.Combine(directoryPath, "Vacations");
-    string janPath = Path.Combine(directoryPath, "Jan-Mar");
-    string aprPath = Path.Combine(directoryPath, "Apr-Jun");
-    string julPath = Path.Combine(directoryPath, "Jul-Sep");
-    string octPath = Path.Combine(directoryPath, "Oct-Dec");
+    string vacationPath = Path.Combine(sourceDirectoryPath, "Vacations");
+    string janPath = Path.Combine(sourceDirectoryPath, "Jan-Mar");
+    string aprPath = Path.Combine(sourceDirectoryPath, "Apr-Jun");
+    string julPath = Path.Combine(sourceDirectoryPath, "Jul-Sep");
+    string octPath = Path.Combine(sourceDirectoryPath, "Oct-Dec");
     if (!Path.Exists(vacationPath)) Directory.CreateDirectory(vacationPath);
     if (!Path.Exists(janPath)) Directory.CreateDirectory(janPath);
     if (!Path.Exists(aprPath)) Directory.CreateDirectory(aprPath);
     if (!Path.Exists(julPath)) Directory.CreateDirectory(julPath);
     if (!Path.Exists(octPath)) Directory.CreateDirectory(octPath);
 
-    var filesToMove = Directory.GetFiles(directoryPath).Length;
-    foreach (string path in Directory.GetFiles(directoryPath))
+    var filesToMove = Directory.GetFiles(sourceDirectoryPath).Length;
+    foreach (string path in Directory.GetFiles(sourceDirectoryPath))
     {
         try
         {
@@ -282,23 +282,23 @@ bool GroupByQuarterAndVacation(string directoryPath)
     return true;
 }
 
-bool GroupByMonth(string directoryPath)
+bool GroupByMonth(string sourceDirectoryPath)
 {
     Console.WriteLine();
-    Console.WriteLine($"Grouping {directoryPath} by month.");
+    Console.WriteLine($"Grouping {sourceDirectoryPath} by month.");
 
     int byMonthCount = 0;
     int byMonthMovedCount = 0;
     int byMonthNoDateCount = 0;
 
     // Rename all directories from MMMM to MM_MMMM
-    foreach (string folder in Directory.GetDirectories(directoryPath))
+    foreach (string folder in Directory.GetDirectories(sourceDirectoryPath))
     {
         DateTime folderDate;
         if (DateTime.TryParseExact(Path.GetFileName(folder), "MMMM", null, System.Globalization.DateTimeStyles.None, out folderDate))
         {
             var newFolderName = folderDate.ToString("MM_MMMM");
-            var newFolderPath = Path.Combine(directoryPath, newFolderName);
+            var newFolderPath = Path.Combine(sourceDirectoryPath, newFolderName);
             if (!Directory.Exists(newFolderPath))
             {
                 Directory.Move(folder, newFolderPath);
@@ -307,8 +307,8 @@ bool GroupByMonth(string directoryPath)
         }
     }
 
-    var filesToMove = Directory.GetFiles(directoryPath).Length;
-    foreach (string path in Directory.GetFiles(directoryPath))
+    var filesToMove = Directory.GetFiles(sourceDirectoryPath).Length;
+    foreach (string path in Directory.GetFiles(sourceDirectoryPath))
     {
         try
         {
@@ -329,7 +329,7 @@ bool GroupByMonth(string directoryPath)
             if (takenDate.HasValue)
             {
                 var month = takenDate.Value.ToString("MM_MMMM");
-                var monthPath = Path.Combine(directoryPath, month);
+                var monthPath = Path.Combine(sourceDirectoryPath, month);
 
                 if (!Path.Exists(month)) Directory.CreateDirectory(monthPath);
 
@@ -364,22 +364,22 @@ bool GroupByMonth(string directoryPath)
     return true;
 }
 
-void Flatten(string directoryPath)
+void Flatten(string sourceDirectoryPath)
 {
     Console.WriteLine("Reversing...");
 
     var fileCount = 0;
     var fileMovedCount = 0;
 
-    foreach (string folder in Directory.GetDirectories(directoryPath))
+    foreach (string folder in Directory.GetDirectories(sourceDirectoryPath))
     {
         foreach (string path in Directory.GetFiles(folder))
         {
             try
             {
                 fileCount++;
-                File.Move(path, Path.Combine(directoryPath, Path.GetFileName(path)));
-                Console.WriteLine($"Moved: {Path.GetFileName(path)} to {directoryPath}");
+                File.Move(path, Path.Combine(sourceDirectoryPath, Path.GetFileName(path)));
+                Console.WriteLine($"Moved: {Path.GetFileName(path)} to {sourceDirectoryPath}");
                 fileMovedCount++;
             }
             catch (Exception ex)
