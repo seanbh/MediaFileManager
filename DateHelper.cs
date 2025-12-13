@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Globalization;
+using System.Drawing;
 using System.Text.RegularExpressions;
 
 public static class DateHelper
@@ -25,8 +27,7 @@ public static class DateHelper
                     continue;
                 }
 
-                DateTime? mediaCreatedDate = GetDateUsingExif(path);
-                Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
+                DateTime? mediaCreatedDate = GetDateTaken(path) ?? GetDateUsingExif(path);
 
                 if (mediaCreatedDate.HasValue)
                 {
@@ -94,7 +95,7 @@ public static class DateHelper
             var creation = DateTime.SpecifyKind(mediaCreatedDate, DateTimeKind.Unspecified);
             var utcOffset = tz.GetUtcOffset(creation);
             Console.WriteLine($"Applying offset {utcOffset.TotalHours} hours for {tz.Id} at {creation} for {Path.GetFileName(filePath)}");
-            mediaCreatedDate = creation - utcOffset;
+            mediaCreatedDate = creation + utcOffset;
 
             return mediaCreatedDate;
         }
@@ -103,6 +104,41 @@ public static class DateHelper
             Console.WriteLine($"Error processing file {filePath}: {ex.Message}");
             return null;
         }
+    }
+
+
+    private static DateTime? GetDateTaken(string filePath)
+    {
+        try
+        {
+            // Only attempt for image files that System.Drawing can open.
+            using var fs = File.OpenRead(filePath);
+            using var img = Image.FromStream(fs, false, false);
+
+            const int DateTakenId = 0x9003; // PropertyTagDateTimeOriginal
+            if (img.PropertyIdList != null && img.PropertyIdList.Contains(DateTakenId))
+            {
+                var prop = img.GetPropertyItem(DateTakenId);
+                string value = System.Text.Encoding.ASCII.GetString(prop.Value).Trim('\0');
+                if (DateTime.TryParseExact(value, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+                {
+                    Console.WriteLine($"Extracted Date from DateTakenId Property: {value}");
+                    return dt;
+                }
+                // Try a more general parse as a fallback
+                if (DateTime.TryParse(value, out dt))
+                {
+                    Console.WriteLine($"Extracted Date from DateTakenId Property: {value}");
+                    return dt;
+                }
+            }
+        }
+        catch
+        {
+            // Ignore errors — not all files support image metadata.
+        }
+
+        return null;
     }
 
 
