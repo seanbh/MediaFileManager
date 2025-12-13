@@ -65,52 +65,6 @@ switch (processType)
         break;
 }
 
-void FixDates(string directoryPath)
-{
-    Console.WriteLine($"Fixing dates in {directoryPath}");
-
-    foreach (string path in Directory.GetFiles(directoryPath))
-    {
-        try
-        {
-            DateTime? mediaCreatedDate = GetDateTakenDate(path);
-            Console.WriteLine($"Date taken for {Path.GetFileName(path)}: {mediaCreatedDate}");
-
-            if (!mediaCreatedDate.HasValue)
-            {
-                mediaCreatedDate = GetMediaCreatedDate(path);
-                Console.WriteLine($"Media created date for {Path.GetFileName(path)}: {mediaCreatedDate}");
-            }
-
-            if (!mediaCreatedDate.HasValue)
-            {
-                mediaCreatedDate = GetDateUsingExif(path);
-                Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
-            }
-
-            if (mediaCreatedDate.HasValue)
-            {
-                File.SetCreationTime(path, mediaCreatedDate.Value);
-                File.SetLastWriteTime(path, mediaCreatedDate.Value);
-                Console.WriteLine($"Fixed date for: {Path.GetFileName(path)} to {mediaCreatedDate.Value}");
-
-                string newFileName = $"{mediaCreatedDate.Value:yyyy-MM-dd_HH-mm-ss}_{Path.GetFileName(path)}";
-                string newFilePath = Path.Combine(directoryPath, newFileName);
-                File.Move(path, newFilePath);
-                Console.WriteLine($"Renamed {Path.GetFileName(path)} to {newFileName}");
-            }
-            else
-            {
-                Console.WriteLine($"Could not get date for {path}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fixing date for {path}: {ex.Message}");
-        }
-    }
-}
-
 void MoveFile(string destPath, string path, DateTime mediaCreatedDate)
 {
     // move the file
@@ -425,6 +379,51 @@ void Flatten(string sourceDirectoryPath)
     Console.WriteLine($"Moved {fileMovedCount} of {fileCount} to base folder");
 }
 
+void FixDates(string directoryPath)
+{
+    Console.WriteLine($"Fixing dates in {directoryPath}");
+
+    foreach (string path in Directory.GetFiles(directoryPath))
+    {
+        try
+        {
+            DateTime? mediaCreatedDate = GetDateTakenDate(path);
+            Console.WriteLine($"Date taken for {Path.GetFileName(path)}: {mediaCreatedDate}");
+
+            if (!mediaCreatedDate.HasValue)
+            {
+                mediaCreatedDate = GetMediaCreatedDate(path);
+                Console.WriteLine($"Media created date for {Path.GetFileName(path)}: {mediaCreatedDate}");
+            }
+
+            if (!mediaCreatedDate.HasValue)
+            {
+                mediaCreatedDate = GetDateUsingExif(path);
+                Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
+            }
+
+            if (mediaCreatedDate.HasValue)
+            {
+                File.SetCreationTime(path, mediaCreatedDate.Value);
+                File.SetLastWriteTime(path, mediaCreatedDate.Value);
+                Console.WriteLine($"Fixed date for: {Path.GetFileName(path)} to {mediaCreatedDate.Value}");
+
+                string newFileName = $"{mediaCreatedDate.Value:yyyy-MM-dd_HH-mm-ss}_{Path.GetFileName(path)}";
+                string newFilePath = Path.Combine(directoryPath, newFileName);
+                File.Move(path, newFilePath);
+                Console.WriteLine($"Renamed {Path.GetFileName(path)} to {newFileName}");
+            }
+            else
+            {
+                Console.WriteLine($"Could not get date for {path}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fixing date for {path}: {ex.Message}");
+        }
+    }
+}
 enum ProcessType
 {
     EndOfYear,
