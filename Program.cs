@@ -3,13 +3,13 @@ using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Shell;
 
 
-/*****ALWAYS *SET THE VARIABLES BELOW THIS LINE********/
+/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
 string photoDirectoryPath = $@"F:\Pictures\2025";
-ProcessType processType = ProcessType.EndOfYearGoogleTakeout;
+ProcessType processType = ProcessType.EndOfYear;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
-/*****SET THESE BELOW IF EndOfYearGoogleTakeout OR VideosByQuarterAndVacation IS SELECTED********/
+/*****SET THESE BELOW IF EndOfYear IS SELECTED********/
 int year = 2025; // you still have to change vacation dates manually
 // Define the date ranges for deletion
 var vacationDates = new List<Tuple<DateTime, DateTime>>()
@@ -18,7 +18,7 @@ var vacationDates = new List<Tuple<DateTime, DateTime>>()
     new(new(year, 6, 18), new(year, 7, 2)),
     new(new(year, 11, 13), new(year, 11, 16))
 };
-/******SET THESE ABOVE IF EndOfYearGoogleTakeout OR VideosByQuarterAndVacation IS SELECTED********/
+/******SET THESE ABOVE IF EndOfYear IS SELECTED********/
 
 int fileCount = 0;
 int vacationCount = 0;
@@ -29,38 +29,37 @@ int octCount = 0;
 int noDateCount = 0;
 int couldNotMoveCount = 0;
 
-
 switch (processType)
 {
-    case ProcessType.EndOfYearGoogleTakeout:
+    case ProcessType.EndOfYear:
         GroupByQuarterAndVacation(videoDirectoryPath);
         GroupByMonth(photoDirectoryPath);
         Console.WriteLine("After yearly video complete, run VideosByMonth to store these videos into month folders.");
         break;
-    case ProcessType.VideosByQuarterAndVacation:
-        GroupByQuarterAndVacation(videoDirectoryPath);
-        break;
     case ProcessType.VideosByMonth:
         GroupByMonth(videoDirectoryPath);
         break;
-    case ProcessType.VideosAndPicturesByQuarter:
-        GroupByQuarterAndVacation(videoDirectoryPath);
-        GroupByQuarterAndVacation(photoDirectoryPath);
+    case ProcessType.PicturesByMonth:
+        GroupByMonth(photoDirectoryPath);
         break;
     case ProcessType.VideosAndPicturesByMonth:
         GroupByMonth(videoDirectoryPath);
         GroupByMonth(photoDirectoryPath);
-        break;
-    case ProcessType.FixDatesOnly:
-        FixDates(photoDirectoryPath);
-        if (photoDirectoryPath != videoDirectoryPath)
-            FixDates(videoDirectoryPath);
         break;
     case ProcessType.FlattenVideos:
         Flatten(videoDirectoryPath);
         break;
     case ProcessType.FlattenPictures:
         Flatten(photoDirectoryPath);
+        break;
+    case ProcessType.FlattenVideosAndPictures:
+        Flatten(videoDirectoryPath);
+        Flatten(photoDirectoryPath);
+        break;
+    case ProcessType.FixDatesOnly:
+        FixDates(photoDirectoryPath);
+        if (photoDirectoryPath != videoDirectoryPath)
+            FixDates(videoDirectoryPath);
         break;
     default:
         break;
@@ -428,12 +427,12 @@ void Flatten(string sourceDirectoryPath)
 
 enum ProcessType
 {
-    EndOfYearGoogleTakeout,
-    VideosByQuarterAndVacation,
+    EndOfYear,
     VideosByMonth,
-    VideosAndPicturesByQuarter,
+    PicturesByMonth,
     VideosAndPicturesByMonth,
     FixDatesOnly,
     FlattenVideos,
-    FlattenPictures
+    FlattenPictures,
+    FlattenVideosAndPictures
 }
