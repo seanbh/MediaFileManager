@@ -29,6 +29,8 @@ int octCount = 0;
 int noDateCount = 0;
 int couldNotMoveCount = 0;
 
+Confirm();
+
 switch (processType)
 {
     case ProcessType.EndOfYear:
@@ -259,6 +261,23 @@ bool GroupByQuarterAndVacation(string sourceDirectoryPath)
     Console.WriteLine($"Total Processed: {vacationCount + janCount + aprCount + julCount + octCount + noDateCount + couldNotMoveCount}");
 
     return true;
+}
+
+void Confirm()
+{
+    Console.WriteLine($"Process: {processType}");
+    Console.WriteLine($"Videos Path: {videoDirectoryPath}");
+    Console.WriteLine($"Photos Path: {photoDirectoryPath}");
+    if (processType == ProcessType.EndOfYear)
+    {
+        Console.WriteLine($"Year: {year}");
+        Console.WriteLine("Vacation Dates:");
+        foreach (var dateRange in vacationDates)
+        {
+            Console.WriteLine($"  From {dateRange.Item1.ToShortDateString()} to {dateRange.Item2.ToShortDateString()}");
+        }
+    }
+    Console.WriteLine("Press enter to continue, Ctrl + C to exit.");
 }
 
 bool GroupByMonth(string sourceDirectoryPath)
