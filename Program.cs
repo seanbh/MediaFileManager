@@ -25,7 +25,6 @@ int julCount = 0;
 int octCount = 0;
 int noDateCount = 0;
 int couldNotMoveCount = 0;
-int offsetHours = 5;
 
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
 string photoDirectoryPath = $@"F:\Pictures\2025";
