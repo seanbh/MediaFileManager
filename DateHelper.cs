@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using Microsoft.WindowsAPICodePack.Shell;
+using System.Text.RegularExpressions;
 
 public static class DateHelper
 {
@@ -16,31 +16,28 @@ public static class DateHelper
         {
             try
             {
-                DateTime? mediaCreatedDate = GetDateTakenDate(path);
-                Console.WriteLine($"Date taken for {Path.GetFileName(path)}: {mediaCreatedDate}");
+                string fileNameOnly = Path.GetFileName(path);
 
-                if (!mediaCreatedDate.HasValue)
+                // If filename already starts with yyyy-MM-dd_HH-mm-ss_, skip it.
+                if (Regex.IsMatch(fileNameOnly, "^\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}_"))
                 {
-                    mediaCreatedDate = GetMediaCreatedDate(path);
-                    Console.WriteLine($"Media created date for {Path.GetFileName(path)}: {mediaCreatedDate}");
+                    Console.WriteLine($"Skipping {fileNameOnly}: already starts with timestamp");
+                    continue;
                 }
 
-                if (!mediaCreatedDate.HasValue)
-                {
-                    mediaCreatedDate = GetDateUsingExif(path);
-                    Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
-                }
+                DateTime? mediaCreatedDate = GetDateUsingExif(path);
+                Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
 
                 if (mediaCreatedDate.HasValue)
                 {
                     File.SetCreationTime(path, mediaCreatedDate.Value);
                     File.SetLastWriteTime(path, mediaCreatedDate.Value);
-                    Console.WriteLine($"Fixed date for: {Path.GetFileName(path)} to {mediaCreatedDate.Value}");
+                    Console.WriteLine($"Fixed date for: {fileNameOnly} to {mediaCreatedDate.Value}");
 
-                    string newFileName = $"{mediaCreatedDate.Value:yyyy-MM-dd_HH-mm-ss}_{Path.GetFileName(path)}";
+                    string newFileName = $"{mediaCreatedDate.Value:yyyy-MM-dd_HH-mm-ss}_{fileNameOnly}";
                     string newFilePath = Path.Combine(directoryPath, newFileName);
                     File.Move(path, newFilePath);
-                    Console.WriteLine($"Renamed {Path.GetFileName(path)} to {newFileName}");
+                    Console.WriteLine($"Renamed {fileNameOnly} to {newFileName}");
                 }
                 else
                 {
@@ -54,28 +51,8 @@ public static class DateHelper
         }
     }
 
-    private static DateTime? GetMediaCreatedDate(string filePath)
-    {
-        ShellObject shell = ShellObject.FromParsingName(filePath);
-
-        var data = shell.Properties.System.Media.DateEncoded;
-
-        return data?.Value;
-    }
-
-    private static DateTime? GetDateTakenDate(string filePath)
-    {
-        ShellObject shell = ShellObject.FromParsingName(filePath);
-
-        var data = shell.Properties.System.Photo.DateTaken;
-
-        return data?.Value;
-    }
-
     private static DateTime? GetDateUsingExif(string filePath)
     {
-        Console.WriteLine($"Could not get date, trying Exif...");
-
         string exifToolPath = @"C:\Program Files\ExifTool\exiftool-13.10_64\exiftool.exe";
         try
         {
