@@ -278,6 +278,7 @@ void Confirm()
         }
     }
     Console.WriteLine("Press enter to continue, Ctrl + C to exit.");
+    Console.ReadLine();
 }
 
 bool GroupByMonth(string sourceDirectoryPath)
