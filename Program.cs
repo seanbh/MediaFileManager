@@ -34,6 +34,7 @@ switch (processType)
 {
     case ProcessType.EndOfYearGoogleTakeout:
         GroupByQuarterAndVacation(videoDirectoryPath);
+        GroupByMonth(photoDirectoryPath);
         break;
     case ProcessType.VideosByQuarterAndVacation:
         GroupByQuarterAndVacation(videoDirectoryPath);
