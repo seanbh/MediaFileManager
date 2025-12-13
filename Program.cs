@@ -75,11 +75,6 @@ void FixDates(string directoryPath)
             {
                 mediaCreatedDate = GetDateUsingExif(path);
                 Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
-                if (mediaCreatedDate.HasValue)
-                {
-                    Console.WriteLine($"Subtracting {offsetHours} hours from {mediaCreatedDate.Value} for {Path.GetFileName(path)}");
-                    mediaCreatedDate = mediaCreatedDate.Value.Subtract(new TimeSpan(0, offsetHours, 0, 0));
-                }
             }
 
             if (mediaCreatedDate.HasValue)
@@ -164,6 +159,10 @@ DateTime? GetDateUsingExif(string filePath)
         Console.WriteLine($"Updated metadata for: {filePath}");
 
         var mediaCreatedDate = new FileInfo(filePath).CreationTime;
+
+        Console.WriteLine($"Subtracting {offsetHours} hours from {mediaCreatedDate} for {Path.GetFileName(filePath)}");
+        mediaCreatedDate = mediaCreatedDate.Subtract(new TimeSpan(0, offsetHours, 0, 0));
+
 
         return mediaCreatedDate;
     }
