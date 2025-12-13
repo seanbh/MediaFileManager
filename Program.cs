@@ -2,8 +2,15 @@
 using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Shell;
 
-int year = 2024; // you still have to change vacation dates manually
 
+/*****ALWAYS *SET THE VARIABLES BELOW THIS LINE********/
+string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
+string photoDirectoryPath = $@"F:\Pictures\2025";
+ProcessType processType = ProcessType.EndOfYearGoogleTakeout;
+/******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
+
+/*****SET THESE BELOW IF EndOfYearGoogleTakeout OR VideosByQuarterAndVacation IS SELECTED********/
+int year = 2025; // you still have to change vacation dates manually
 // Define the date ranges for deletion
 var vacationDates = new List<Tuple<DateTime, DateTime>>()
 {
@@ -11,11 +18,7 @@ var vacationDates = new List<Tuple<DateTime, DateTime>>()
     new(new(year, 6, 18), new(year, 7, 2)),
     new(new(year, 11, 13), new(year, 11, 16))
 };
-
-bool doVideosByQuarter = false;
-bool doPhotos = false;
-bool doVideosByMonth = false;
-bool fixDatesOnly = true;
+/******SET THESE ABOVE IF EndOfYearGoogleTakeout OR VideosByQuarterAndVacation IS SELECTED********/
 
 int fileCount = 0;
 int vacationCount = 0;
@@ -26,31 +29,39 @@ int octCount = 0;
 int noDateCount = 0;
 int couldNotMoveCount = 0;
 
-string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-string photoDirectoryPath = $@"F:\Pictures\2025";
 
-if (doVideosByQuarter)
+switch (processType)
 {
-    //Flatten(videoDirectoryPath);
-    GroupByQuarterAndVacation(videoDirectoryPath);
-}
-else if (doVideosByMonth)
-{
-    //Flatten(videoDirectoryPath);
-    GroupByMonth(videoDirectoryPath);
-}
-
-if (doPhotos)
-{
-    //Flatten(photoDirectoryPath);
-    GroupByMonth(photoDirectoryPath);
-}
-
-if (fixDatesOnly)
-{
-    FixDates(photoDirectoryPath);
-    if (photoDirectoryPath != videoDirectoryPath)
-        FixDates(videoDirectoryPath);
+    case ProcessType.EndOfYearGoogleTakeout:
+        GroupByQuarterAndVacation(videoDirectoryPath);
+        break;
+    case ProcessType.VideosByQuarterAndVacation:
+        GroupByQuarterAndVacation(videoDirectoryPath);
+        break;
+    case ProcessType.VideosByMonth:
+        GroupByMonth(videoDirectoryPath);
+        break;
+    case ProcessType.VideosAndPicturesByQuarter:
+        GroupByQuarterAndVacation(videoDirectoryPath);
+        GroupByQuarterAndVacation(photoDirectoryPath);
+        break;
+    case ProcessType.VideosAndPicturesByMonth:
+        GroupByMonth(videoDirectoryPath);
+        GroupByMonth(photoDirectoryPath);
+        break;
+    case ProcessType.FixDatesOnly:
+        FixDates(photoDirectoryPath);
+        if (photoDirectoryPath != videoDirectoryPath)
+            FixDates(videoDirectoryPath);
+        break;
+    case ProcessType.FlattenVideos:
+        Flatten(videoDirectoryPath);
+        break;
+    case ProcessType.FlattenPictures:
+        Flatten(photoDirectoryPath);
+        break;
+    default:
+        break;
 }
 
 void FixDates(string directoryPath)
@@ -98,7 +109,6 @@ void FixDates(string directoryPath)
         }
     }
 }
-
 
 void MoveFile(string destPath, string path, DateTime mediaCreatedDate)
 {
@@ -412,4 +422,16 @@ void Flatten(string sourceDirectoryPath)
     }
 
     Console.WriteLine($"Moved {fileMovedCount} of {fileCount} to base folder");
+}
+
+enum ProcessType
+{
+    EndOfYearGoogleTakeout,
+    VideosByQuarterAndVacation,
+    VideosByMonth,
+    VideosAndPicturesByQuarter,
+    VideosAndPicturesByMonth,
+    FixDatesOnly,
+    FlattenVideos,
+    FlattenPictures
 }
