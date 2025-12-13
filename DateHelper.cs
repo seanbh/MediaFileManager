@@ -82,20 +82,23 @@ public static class DateHelper
             // mediaCreatedDate = mediaCreatedDate.Subtract(new TimeSpan(0, offsetHours, 0, 0));
 
             // DST-aware offset: choose the timezone that should be applied to the file timestamps.
-            TimeZoneInfo tz;
-            try
+            if (!filePath.ToLower().EndsWith(".heic"))
             {
-                tz = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
-            }
-            catch
-            {
-                tz = TimeZoneInfo.Local;
-            }
+                TimeZoneInfo tz;
+                try
+                {
+                    tz = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                }
+                catch
+                {
+                    tz = TimeZoneInfo.Local;
+                }
 
-            var creation = DateTime.SpecifyKind(mediaCreatedDate, DateTimeKind.Unspecified);
-            var utcOffset = tz.GetUtcOffset(creation);
-            Console.WriteLine($"Applying offset {utcOffset.TotalHours} hours for {tz.Id} at {creation} for {Path.GetFileName(filePath)}");
-            mediaCreatedDate = creation + utcOffset;
+                var creation = DateTime.SpecifyKind(mediaCreatedDate, DateTimeKind.Unspecified);
+                var utcOffset = tz.GetUtcOffset(creation);
+                Console.WriteLine($"Applying offset {utcOffset.TotalHours} hours for {tz.Id} at {creation} for {Path.GetFileName(filePath)}");
+                mediaCreatedDate = creation + utcOffset;
+            }
 
             return mediaCreatedDate;
         }
