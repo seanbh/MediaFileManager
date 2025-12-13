@@ -35,6 +35,7 @@ switch (processType)
     case ProcessType.EndOfYearGoogleTakeout:
         GroupByQuarterAndVacation(videoDirectoryPath);
         GroupByMonth(photoDirectoryPath);
+        Console.WriteLine("After yearly video complete, run VideosByMonth to store these videos into month folders.");
         break;
     case ProcessType.VideosByQuarterAndVacation:
         GroupByQuarterAndVacation(videoDirectoryPath);
