@@ -1,12 +1,7 @@
-﻿
-using System.Diagnostics;
-using Microsoft.WindowsAPICodePack.Shell;
-
-
-/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
+﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
 string photoDirectoryPath = $@"F:\Pictures\2025";
-ProcessType processType = ProcessType.EndOfYear;
+ProcessType processType = ProcessType.FlattenVideosAndPictures;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -59,9 +54,9 @@ switch (processType)
         Flatten(photoDirectoryPath);
         break;
     case ProcessType.FixDatesOnly:
-        FixDates(photoDirectoryPath);
+        DateHelper.FixDates(photoDirectoryPath);
         if (photoDirectoryPath != videoDirectoryPath)
-            FixDates(videoDirectoryPath);
+            DateHelper.FixDates(videoDirectoryPath);
         break;
     default:
         break;
@@ -81,79 +76,6 @@ void MoveFile(string destPath, string path, DateTime mediaCreatedDate)
     }
 }
 
-DateTime? GetMediaCreatedDate(string filePath)
-{
-    ShellObject shell = ShellObject.FromParsingName(filePath);
-
-    var data = shell.Properties.System.Media.DateEncoded;
-
-    return data?.Value;
-}
-
-DateTime? GetDateTakenDate(string filePath)
-{
-    ShellObject shell = ShellObject.FromParsingName(filePath);
-
-    var data = shell.Properties.System.Photo.DateTaken;
-
-    return data?.Value;
-}
-
-DateTime? GetDateUsingExif(string filePath)
-{
-    Console.WriteLine($"Could not get date, trying Exif...");
-
-    string exifToolPath = @"C:\Program Files\ExifTool\exiftool-13.10_64\exiftool.exe";
-    try
-    {
-        // Run ExifTool to update metadata
-        Process process = new()
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = exifToolPath,
-                Arguments = $"-overwrite_original \"-FileCreateDate<CreateDate\" \"{filePath}\"",
-                RedirectStandardOutput = false,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            }
-        };
-
-        process.Start();
-        process.WaitForExit();
-
-        Console.WriteLine($"Updated metadata for: {filePath}");
-
-        var mediaCreatedDate = new FileInfo(filePath).CreationTime;
-
-        // old way
-        // Console.WriteLine($"Subtracting {offsetHours} hours from {mediaCreatedDate} for {Path.GetFileName(filePath)}");
-        // mediaCreatedDate = mediaCreatedDate.Subtract(new TimeSpan(0, offsetHours, 0, 0));
-
-        // DST-aware offset: choose the timezone that should be applied to the file timestamps.
-        TimeZoneInfo tz;
-        try
-        {
-            tz = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
-        }
-        catch
-        {
-            tz = TimeZoneInfo.Local;
-        }
-
-        var creation = DateTime.SpecifyKind(mediaCreatedDate, DateTimeKind.Unspecified);
-        var utcOffset = tz.GetUtcOffset(creation);
-        Console.WriteLine($"Applying offset {utcOffset.TotalHours} hours for {tz.Id} at {creation} for {Path.GetFileName(filePath)}");
-        mediaCreatedDate = creation - utcOffset;
-
-        return mediaCreatedDate;
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error processing file {filePath}: {ex.Message}");
-        return null;
-    }
-}
 
 bool GroupByQuarterAndVacation(string sourceDirectoryPath)
 {
@@ -162,6 +84,8 @@ bool GroupByQuarterAndVacation(string sourceDirectoryPath)
         Console.WriteLine($"Path {sourceDirectoryPath} does not exist");
         return false;
     }
+
+    DateHelper.FixDates(sourceDirectoryPath);
 
     string vacationPath = Path.Combine(sourceDirectoryPath, "Vacations");
     string janPath = Path.Combine(sourceDirectoryPath, "Jan-Mar");
@@ -182,59 +106,47 @@ bool GroupByQuarterAndVacation(string sourceDirectoryPath)
             fileCount++;
             var movedToVacation = false;
 
-            DateTime? mediaCreatedDate = GetMediaCreatedDate(path);
+            DateTime mediaCreatedDate = DateHelper.GetFileCreationDate(path);
 
-            if (!mediaCreatedDate.HasValue)
+            foreach (var dateRange in vacationDates)
             {
-                mediaCreatedDate = GetDateUsingExif(path);
-            }
-
-            if (mediaCreatedDate.HasValue)
-            {
-                foreach (var dateRange in vacationDates)
+                if (mediaCreatedDate >= dateRange.Item1 && mediaCreatedDate < dateRange.Item2.AddDays(1) && File.Exists(path))
                 {
-                    if (mediaCreatedDate >= dateRange.Item1 && mediaCreatedDate < dateRange.Item2.AddDays(1) && File.Exists(path))
-                    {
-                        MoveFile(vacationPath, path, mediaCreatedDate.Value);
-                        vacationCount++;
-                        movedToVacation = true;
-                    }
-                }
-
-                if (!movedToVacation && File.Exists(path))
-                {
-                    if (mediaCreatedDate >= new DateTime(year, 1, 1) && mediaCreatedDate < new DateTime(year, 4, 1))
-                    {
-                        MoveFile(janPath, path, mediaCreatedDate.Value);
-                        janCount++;
-                    }
-                    else if (mediaCreatedDate >= new DateTime(year, 4, 1) && mediaCreatedDate <= new DateTime(year, 7, 1))
-                    {
-                        MoveFile(aprPath, path, mediaCreatedDate.Value);
-                        aprCount++;
-                    }
-                    else if (mediaCreatedDate >= new DateTime(year, 7, 1) && mediaCreatedDate <= new DateTime(year, 10, 1))
-                    {
-                        MoveFile(julPath, path, mediaCreatedDate.Value);
-                        julCount++;
-                    }
-                    else if (mediaCreatedDate >= new DateTime(year, 10, 1) && mediaCreatedDate <= new DateTime(year + 1, 1, 1))
-                    {
-                        MoveFile(octPath, path, mediaCreatedDate.Value);
-                        octCount++;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Could not move : {path} with date {mediaCreatedDate.Value}");
-                        couldNotMoveCount++;
-                    }
+                    MoveFile(vacationPath, path, mediaCreatedDate);
+                    vacationCount++;
+                    movedToVacation = true;
                 }
             }
-            else
+
+            if (!movedToVacation && File.Exists(path))
             {
-                Console.WriteLine($"Could not get file date for {path}");
-                noDateCount++;
+                if (mediaCreatedDate >= new DateTime(year, 1, 1) && mediaCreatedDate < new DateTime(year, 4, 1))
+                {
+                    MoveFile(janPath, path, mediaCreatedDate);
+                    janCount++;
+                }
+                else if (mediaCreatedDate >= new DateTime(year, 4, 1) && mediaCreatedDate <= new DateTime(year, 7, 1))
+                {
+                    MoveFile(aprPath, path, mediaCreatedDate);
+                    aprCount++;
+                }
+                else if (mediaCreatedDate >= new DateTime(year, 7, 1) && mediaCreatedDate <= new DateTime(year, 10, 1))
+                {
+                    MoveFile(julPath, path, mediaCreatedDate);
+                    julCount++;
+                }
+                else if (mediaCreatedDate >= new DateTime(year, 10, 1) && mediaCreatedDate <= new DateTime(year + 1, 1, 1))
+                {
+                    MoveFile(octPath, path, mediaCreatedDate);
+                    octCount++;
+                }
+                else
+                {
+                    Console.WriteLine($"Could not move : {path} with date {mediaCreatedDate}");
+                    couldNotMoveCount++;
+                }
             }
+
         }
         catch (Exception ex)
         {
@@ -263,26 +175,10 @@ bool GroupByQuarterAndVacation(string sourceDirectoryPath)
     return true;
 }
 
-void Confirm()
-{
-    Console.WriteLine($"Process: {processType}");
-    Console.WriteLine($"Videos Path: {videoDirectoryPath}");
-    Console.WriteLine($"Photos Path: {photoDirectoryPath}");
-    if (processType == ProcessType.EndOfYear)
-    {
-        Console.WriteLine($"Year: {year}");
-        Console.WriteLine("Vacation Dates:");
-        foreach (var dateRange in vacationDates)
-        {
-            Console.WriteLine($"  From {dateRange.Item1.ToShortDateString()} to {dateRange.Item2.ToShortDateString()}");
-        }
-    }
-    Console.WriteLine("Press enter to continue, Ctrl + C to exit.");
-    Console.ReadLine();
-}
-
 bool GroupByMonth(string sourceDirectoryPath)
 {
+    DateHelper.FixDates(sourceDirectoryPath);
+
     Console.WriteLine();
     Console.WriteLine($"Grouping {sourceDirectoryPath} by month.");
 
@@ -313,38 +209,21 @@ bool GroupByMonth(string sourceDirectoryPath)
         {
             byMonthCount++;
 
-            DateTime? takenDate = GetDateTakenDate(path);
+            DateTime takenDate = DateHelper.GetFileCreationDate(path);
 
-            if (!takenDate.HasValue)
-            {
-                takenDate = GetMediaCreatedDate(path);
-            }
+            var month = takenDate.ToString("MM_MMMM");
+            var monthPath = Path.Combine(sourceDirectoryPath, month);
 
-            if (!takenDate.HasValue)
-            {
-                takenDate = GetDateUsingExif(path);
-            }
+            if (!Path.Exists(month)) Directory.CreateDirectory(monthPath);
 
-            if (takenDate.HasValue)
-            {
-                var month = takenDate.Value.ToString("MM_MMMM");
-                var monthPath = Path.Combine(sourceDirectoryPath, month);
+            File.Move(path, Path.Combine(monthPath, Path.GetFileName(path)));
+            Console.WriteLine($"Moved: {Path.GetFileName(path)} with date {takenDate} to {monthPath}");
 
-                if (!Path.Exists(month)) Directory.CreateDirectory(monthPath);
+            byMonthMovedCount++;
 
-                File.Move(path, Path.Combine(monthPath, Path.GetFileName(path)));
-                Console.WriteLine($"Moved: {Path.GetFileName(path)} with date {takenDate} to {monthPath}");
+            var filesLeftToMove = filesToMove - byMonthMovedCount;
+            Console.WriteLine($"Files left to move: {filesLeftToMove}");
 
-                byMonthMovedCount++;
-
-                var filesLeftToMove = filesToMove - byMonthMovedCount;
-                Console.WriteLine($"Files left to move: {filesLeftToMove}");
-            }
-            else
-            {
-                Console.WriteLine($"Could not get file date for {path}");
-                byMonthNoDateCount++;
-            }
         }
         catch (Exception ex)
         {
@@ -399,51 +278,25 @@ void Flatten(string sourceDirectoryPath)
     Console.WriteLine($"Moved {fileMovedCount} of {fileCount} to base folder");
 }
 
-void FixDates(string directoryPath)
+void Confirm()
 {
-    Console.WriteLine($"Fixing dates in {directoryPath}");
-
-    foreach (string path in Directory.GetFiles(directoryPath))
+    Console.WriteLine($"Process: {processType}");
+    Console.WriteLine($"Videos Path: {videoDirectoryPath}");
+    Console.WriteLine($"Photos Path: {photoDirectoryPath}");
+    if (processType == ProcessType.EndOfYear)
     {
-        try
+        Console.WriteLine($"Year: {year}");
+        Console.WriteLine("Vacation Dates:");
+        foreach (var dateRange in vacationDates)
         {
-            DateTime? mediaCreatedDate = GetDateTakenDate(path);
-            Console.WriteLine($"Date taken for {Path.GetFileName(path)}: {mediaCreatedDate}");
-
-            if (!mediaCreatedDate.HasValue)
-            {
-                mediaCreatedDate = GetMediaCreatedDate(path);
-                Console.WriteLine($"Media created date for {Path.GetFileName(path)}: {mediaCreatedDate}");
-            }
-
-            if (!mediaCreatedDate.HasValue)
-            {
-                mediaCreatedDate = GetDateUsingExif(path);
-                Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
-            }
-
-            if (mediaCreatedDate.HasValue)
-            {
-                File.SetCreationTime(path, mediaCreatedDate.Value);
-                File.SetLastWriteTime(path, mediaCreatedDate.Value);
-                Console.WriteLine($"Fixed date for: {Path.GetFileName(path)} to {mediaCreatedDate.Value}");
-
-                string newFileName = $"{mediaCreatedDate.Value:yyyy-MM-dd_HH-mm-ss}_{Path.GetFileName(path)}";
-                string newFilePath = Path.Combine(directoryPath, newFileName);
-                File.Move(path, newFilePath);
-                Console.WriteLine($"Renamed {Path.GetFileName(path)} to {newFileName}");
-            }
-            else
-            {
-                Console.WriteLine($"Could not get date for {path}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fixing date for {path}: {ex.Message}");
+            Console.WriteLine($"  From {dateRange.Item1.ToShortDateString()} to {dateRange.Item2.ToShortDateString()}");
         }
     }
+    Console.WriteLine("Press enter to continue, Ctrl + C to exit.");
+    Console.ReadLine();
 }
+
+
 enum ProcessType
 {
     EndOfYear,
