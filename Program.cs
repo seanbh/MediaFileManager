@@ -7,10 +7,9 @@ int year = 2024; // you still have to change vacation dates manually
 // Define the date ranges for deletion
 var vacationDates = new List<Tuple<DateTime, DateTime>>()
 {
-    new(new(year, 3, 16), new(year, 3, 23)),
-    new(new(year, 6, 8), new(year, 6, 14)),
-    new(new(year, 7, 21), new(year, 7, 26)),
-    new(new(year, 10, 5), new(year, 10, 12))
+    new(new(year, 1, 24), new(year, 1, 29)),
+    new(new(year, 6, 18), new(year, 7, 2)),
+    new(new(year, 11, 13), new(year, 11, 16))
 };
 
 bool doVideosByQuarter = false;
@@ -26,10 +25,10 @@ int julCount = 0;
 int octCount = 0;
 int noDateCount = 0;
 int couldNotMoveCount = 0;
-int offsetHours = 4;
+int offsetHours = 5;
 
-string videoDirectoryPath = @$"C:\Users\seanh\Downloads\Autumn";
-string photoDirectoryPath = $@"C:\Users\seanh\Downloads\Autumn";
+string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\MET 2025";
+string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Stage\MET 2025";
 
 if (doVideosByQuarter)
 {
@@ -78,7 +77,7 @@ void FixDates(string directoryPath)
                 Console.WriteLine($"Exif date for {Path.GetFileName(path)}: {mediaCreatedDate}");
                 if (mediaCreatedDate.HasValue)
                 {
-                    Console.WriteLine($"Subtracting 4 hours from {mediaCreatedDate.Value} for {Path.GetFileName(path)}");
+                    Console.WriteLine($"Subtracting {offsetHours} hours from {mediaCreatedDate.Value} for {Path.GetFileName(path)}");
                     mediaCreatedDate = mediaCreatedDate.Value.Subtract(new TimeSpan(0, offsetHours, 0, 0));
                 }
             }
