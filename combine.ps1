@@ -1,12 +1,17 @@
+# .\combine.ps1 -SourcePath "C:\Users\seanh\Downloads\test" -Title "Line One\nLine Two\nLine Three"
 param (
     [Parameter(Mandatory = $true)]
-    [string]$SourcePath
+    [string]$SourcePath,
+    
+    # use \n for new lines
+    [Parameter(Mandatory = $false)]
+    [string]$Title = "My Video Title"
 )
 
 # =========================
 # Configuration
 # =========================
-$titleText = "My Video Title"
+$titleText = $Title
 $titleSecs = 4
 $imageSecs = 3
 $width = 1920
@@ -30,7 +35,9 @@ New-Item -ItemType Directory -Path $tempDir | Out-Null
 # =========================
 # Create title card (WINDOWS-SAFE)
 # =========================
-$titleTextEscaped = $titleText -replace "'", "\\'"
+# Convert escaped newlines (\n in parameter) to actual newlines
+$titleTextFormatted = $titleText -replace '\\n', "`n"
+$titleTextEscaped = $titleTextFormatted -replace "'", "\\'"
 $drawTextFilter = @"
 drawtext=font='Arial':
 text='${titleTextEscaped}':
