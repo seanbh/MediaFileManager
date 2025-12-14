@@ -30,9 +30,10 @@ New-Item -ItemType Directory -Path $tempDir | Out-Null
 # =========================
 # Create title card (WINDOWS-SAFE)
 # =========================
+$titleTextEscaped = $titleText -replace "'", "\\'"
 $drawTextFilter = @"
-drawtext=fontfile=${fontPath}:
-text=${titleText}:
+drawtext=font='Arial':
+text='${titleTextEscaped}':
 fontcolor=white:
 fontsize=64:
 x=(w-text_w)/2:
