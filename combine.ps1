@@ -16,7 +16,10 @@ $titleSecs = 4
 $imageSecs = 3
 $width = 1920
 $height = 1080
-$outputFile = Join-Path $SourcePath "final.mp4"
+
+# Create safe filename from title (remove invalid characters)
+$safeTitle = $titleText -replace '[<>:"/\\|?*]', '' -replace '\n', ' '
+$outputFile = Join-Path $SourcePath "$safeTitle.mp4"
 
 $fontPath = "C:/Windows/Fonts/arial.ttf"
 
