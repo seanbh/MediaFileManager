@@ -17,8 +17,8 @@ $imageSecs = 3
 $width = 1920
 $height = 1080
 
-# Create safe filename from title (remove invalid characters)
-$safeTitle = $titleText -replace '[<>:"/\\|?*]', '' -replace '\n', ' '
+# Create safe filename from title (remove invalid characters and literal \n strings)
+$safeTitle = $titleText -replace '\\n', ' ' -replace '[<>:"/\\|?*]', ''
 $outputFile = Join-Path $SourcePath "$safeTitle.mp4"
 
 $fontPath = "C:/Windows/Fonts/arial.ttf"
