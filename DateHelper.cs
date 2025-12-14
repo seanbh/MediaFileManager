@@ -7,6 +7,26 @@ public static class DateHelper
 {
     public static DateTime GetFileCreationDate(string filePath)
     {
+        try
+        {
+            string fileName = Path.GetFileName(filePath);
+
+            // Pattern: yyyy-MM-dd_HH-mm-ss_
+            var m = Regex.Match(fileName, "^(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})_");
+            if (m.Success)
+            {
+                var ts = m.Groups[1].Value;
+                if (DateTime.TryParseExact(ts, "yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+                {
+                    return dt;
+                }
+            }
+        }
+        catch
+        {
+            // Ignore parse errors and fall back to file system timestamp
+        }
+
         return File.GetCreationTime(filePath);
     }
 
