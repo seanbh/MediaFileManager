@@ -25,6 +25,8 @@ public class EndOfYear
             return false;
         }
 
+        new FlattenHelper().Flatten(sourceDirectoryPath);
+
         DateHelper.FixDates(sourceDirectoryPath);
 
         string vacationPath = Path.Combine(sourceDirectoryPath, "Vacations");

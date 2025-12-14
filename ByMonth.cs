@@ -3,6 +3,8 @@ public class ByMonth()
     int couldNotMoveCount = 0;
     public bool GroupByMonth(string sourceDirectoryPath)
     {
+        new FlattenHelper().Flatten(sourceDirectoryPath);
+
         DateHelper.FixDates(sourceDirectoryPath);
 
         Console.WriteLine();
