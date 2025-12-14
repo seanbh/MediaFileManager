@@ -52,6 +52,51 @@ public static class DateHelper
         }
     }
 
+    public static void RemoveDatePrefix(string directoryPath)
+    {
+        Console.WriteLine($"Removing date prefixes in {directoryPath}");
+
+        foreach (string path in Directory.GetFiles(directoryPath))
+        {
+            try
+            {
+                string fileNameOnly = Path.GetFileName(path);
+
+                // Pattern: yyyy-MM-dd_HH-mm-ss_
+                if (!Regex.IsMatch(fileNameOnly, "^\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}_"))
+                {
+                    continue;
+                }
+
+                string cleaned = Regex.Replace(fileNameOnly, "^\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}_", "");
+                string newPath = Path.Combine(directoryPath, cleaned);
+
+                // If target exists, try to find a unique name by appending (n)
+                if (File.Exists(newPath))
+                {
+                    string nameWithoutExt = Path.GetFileNameWithoutExtension(cleaned);
+                    string ext = Path.GetExtension(cleaned);
+                    int i = 1;
+                    string candidate;
+                    do
+                    {
+                        candidate = $"{nameWithoutExt} ({i}){ext}";
+                        newPath = Path.Combine(directoryPath, candidate);
+                        i++;
+                    }
+                    while (File.Exists(newPath));
+                }
+
+                File.Move(path, newPath);
+                Console.WriteLine($"Renamed {fileNameOnly} to {Path.GetFileName(newPath)}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing prefix for {path}: {ex.Message}");
+            }
+        }
+    }
+
     private static DateTime? GetDateUsingExif(string filePath)
     {
         string exifToolPath = @"C:\Program Files\ExifTool\exiftool-13.10_64\exiftool.exe";

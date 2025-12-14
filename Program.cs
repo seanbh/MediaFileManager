@@ -1,9 +1,9 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
-// string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-// string photoDirectoryPath = $@"F:\Pictures\2025";
-string videoDirectoryPath = @"C:\Users\seanh\Downloads\test";
-string photoDirectoryPath = @"C:\Users\seanh\Downloads\test";
-ProcessType processType = ProcessType.FixDatesOnly;
+string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
+string photoDirectoryPath = $@"F:\Pictures\2025";
+// string videoDirectoryPath = @"C:\Users\seanh\Pictures\Google Takeout\Takeout\Google Photos\Photos from 2025";
+// string photoDirectoryPath = @"C:\Users\seanh\Pictures\Google Takeout\Takeout\Google Photos\Photos from 2025";
+ProcessType processType = ProcessType.EndOfYear;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -17,6 +17,7 @@ var vacationDates = new List<Tuple<DateTime, DateTime>>()
 };
 /******SET THESE ABOVE IF EndOfYear IS SELECTED********/
 
+//DateHelper.RemoveDatePrefix(photoDirectoryPath);
 Confirm();
 
 switch (processType)
