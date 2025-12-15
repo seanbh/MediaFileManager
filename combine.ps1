@@ -93,7 +93,7 @@ ForEach-Object {
         
         ffmpeg -y `
             -i "$($_.FullName)" `
-            -vf "fps=30,scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2" `
+            -vf "fps=30,scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,setsar=1" `
             -c:v libx264 -pix_fmt yuv420p `
             -c:a aac -b:a 128k `
             "$vidVideo"
@@ -117,7 +117,7 @@ ForEach-Object {
             -loop 1 -i "$($_.FullName)" -t $imageSecs `
             -f lavfi -i "anullsrc=r=44100:cl=stereo:d=$imageSecs" `
             -shortest `
-            -vf "scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2" `
+            -vf "scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,setsar=1" `
             -c:v libx264 -pix_fmt yuv420p `
             -c:a aac -b:a 128k `
             "$imgVideo"
