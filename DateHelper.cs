@@ -68,6 +68,7 @@ public static class DateHelper
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fixing date for {path}: {ex.Message}");
+                break;
             }
         }
     }
