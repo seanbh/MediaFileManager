@@ -1,7 +1,7 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
 string photoDirectoryPath = $@"F:\Pictures\2025";
-ProcessType processType = ProcessType.YearInPhotos;
+ProcessType processType = ProcessType.RenameFiles;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -17,6 +17,19 @@ var vacationDates = new List<Tuple<DateTime, DateTime>>()
 
 string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is selected
 
+/*****SET THESE BELOW IF RenameFiles IS SELECTED********/
+string[] renameFilesPaths = new[]
+{
+    @"F:\Videos\MPEG\2021-2030\2024"
+}; // Array of paths to process
+var fileReplacements = new Dictionary<string, string>
+{
+    { "Jan-Mar", "Vol 1" },
+    { "Apr-Jun", "Vol 2" },
+    { "Jul-Sep", "Vol 3" },
+    { "Oct-Dec", "Vol 4" },
+};
+/******SET THESE ABOVE IF RenameFiles IS SELECTED********/
 
 //DateHelper.RemoveDatePrefix(photoDirectoryPath);
 Confirm();
@@ -59,6 +72,9 @@ switch (processType)
         break;
     case ProcessType.YearInPhotos:
         new YearInPhotos().CopyNthFile(photoDirectoryPath, skip: 3);
+        break;
+    case ProcessType.RenameFiles:
+        new RenameFiles().RenameFilesInPaths(renameFilesPaths, fileReplacements);
         break;
     default:
         break;
@@ -104,5 +120,6 @@ enum ProcessType
     FlattenPictures,
     FlattenVideosAndPictures,
     GoogleZip,
-    YearInPhotos
+    YearInPhotos,
+    RenameFiles
 }
