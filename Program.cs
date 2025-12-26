@@ -1,10 +1,7 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
 string photoDirectoryPath = $@"F:\Pictures\2025";
-//string videoDirectoryPath = @"C:\Users\seanh\Downloads\test";
-//string photoDirectoryPath = @"C:\Users\seanh\Downloads\test";
-ProcessType processType = ProcessType.VideosByMonth;
-string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is selected
+ProcessType processType = ProcessType.YearInPhotos;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -17,6 +14,9 @@ var vacationDates = new List<Tuple<DateTime, DateTime>>()
     new(new(year, 11, 13), new(year, 11, 16))
 };
 /******SET THESE ABOVE IF EndOfYear IS SELECTED********/
+
+string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is selected
+
 
 //DateHelper.RemoveDatePrefix(photoDirectoryPath);
 Confirm();
@@ -56,6 +56,9 @@ switch (processType)
         break;
     case ProcessType.GoogleZip:
         new GoogleZip().ProcessGoogleZip(videoDirectoryPath, photoDirectoryPath, googleZipFileName);
+        break;
+    case ProcessType.YearInPhotos:
+        new YearInPhotos().CopyNthFile(photoDirectoryPath, skip: 4);
         break;
     default:
         break;
@@ -100,5 +103,6 @@ enum ProcessType
     FlattenVideos,
     FlattenPictures,
     FlattenVideosAndPictures,
-    GoogleZip
+    GoogleZip,
+    YearInPhotos
 }
