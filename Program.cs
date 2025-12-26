@@ -1,7 +1,7 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Stage\2025 in Pictures";
-ProcessType processType = ProcessType.RenameFiles;
+string photoDirectoryPath = $@"F:\Pictures\2025";
+ProcessType processType = ProcessType.VideosByMonth;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -15,7 +15,7 @@ var vacationDates = new List<Tuple<DateTime, DateTime>>()
 };
 /******SET THESE ABOVE IF EndOfYear IS SELECTED********/
 
-string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is selected
+string googleZipFileName = "Photos-3-001 (3).zip"; // Set this if GoogleZip is selected
 
 /*****SET THESE BELOW IF RenameFiles IS SELECTED********/
 string[] renameFilesPaths = new[]

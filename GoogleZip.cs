@@ -20,10 +20,14 @@ public class GoogleZip
             return false;
         }
 
+        // Create a subdirectory with the zip file name (without extension)
+        string zipNameWithoutExtension = Path.GetFileNameWithoutExtension(zipFileName);
+        string extractionPath = Path.Combine(downloadsPath, zipNameWithoutExtension);
+
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"Processing Google Zip: {zipFileName}");
-        Console.WriteLine($"Extracting to: {downloadsPath}");
+        Console.WriteLine($"Extracting to: {extractionPath}");
         Console.ResetColor();
 
         try
@@ -33,15 +37,17 @@ public class GoogleZip
                 Directory.CreateDirectory(videoDirectoryPath);
             if (!Directory.Exists(photoDirectoryPath))
                 Directory.CreateDirectory(photoDirectoryPath);
+            if (!Directory.Exists(extractionPath))
+                Directory.CreateDirectory(extractionPath);
 
-            // Extract the zip file to the Downloads directory
-            ZipFile.ExtractToDirectory(zipFilePath, downloadsPath, true);
+            // Extract the zip file to the subdirectory
+            ZipFile.ExtractToDirectory(zipFilePath, extractionPath, true);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Extracted {zipFileName}");
             Console.ResetColor();
 
-            // Process all files in the Downloads directory
-            ProcessFilesInDownloads(downloadsPath, videoDirectoryPath, photoDirectoryPath);
+            // Process all files in the extracted subdirectory
+            ProcessFilesInDownloads(extractionPath, videoDirectoryPath, photoDirectoryPath);
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Magenta;
