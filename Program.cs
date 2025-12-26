@@ -20,15 +20,28 @@ string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is s
 /*****SET THESE BELOW IF RenameFiles IS SELECTED********/
 string[] renameFilesPaths = new[]
 {
-    @"F:\Videos\MPEG\2021-2030\2024"
+    @"F:\Videos\MPEG\2021-2030",
+    @"F:\Videos\MPEG\2011-2020",
+    @"G:\Videos\MPEG\2021-2030",
+    @"G:\Videos\MPEG\2011-2020",
 }; // Array of paths to process
 var fileReplacements = new Dictionary<string, string>
 {
+    { "Uncut IV", "Vol 4" },
+    { "Uncut III", "Vol 3" },
+    { "Uncut II", "Vol 2" },
+    { "Vol 1I", "Vol 2" },
+    { "Vol 2I", "Vol 3" },
+    { "Vol 1V", "Vol 4" },
+    { "Uncut I", "Vol 1" },
     { "Jan-Mar", "Vol 1" },
     { "Apr-Jun", "Vol 2" },
     { "Jul-Sep", "Vol 3" },
+    { "Apr-Sept", "Vol 2-3" },
     { "Oct-Dec", "Vol 4" },
+    { " - ", " " }, // Remove ' - ' from filenames
 };
+// check: Get-ChildItem -Recurse -File
 /******SET THESE ABOVE IF RenameFiles IS SELECTED********/
 
 //DateHelper.RemoveDatePrefix(photoDirectoryPath);
@@ -71,7 +84,7 @@ switch (processType)
         new GoogleZip().ProcessGoogleZip(videoDirectoryPath, photoDirectoryPath, googleZipFileName);
         break;
     case ProcessType.YearInPhotos:
-        new YearInPhotos().CopyNthFile(photoDirectoryPath, skip: 3);
+        new YearInPhotos().CopyNthFile(photoDirectoryPath, skip: 4);
         break;
     case ProcessType.RenameFiles:
         new RenameFiles().RenameFilesInPaths(renameFilesPaths, fileReplacements);
