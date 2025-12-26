@@ -1,9 +1,10 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
-string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Christmas_Boys\Date Fix";
-string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Christmas_Boys\Date Fix";
+string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
+string photoDirectoryPath = $@"F:\Pictures\2025";
 //string videoDirectoryPath = @"C:\Users\seanh\Downloads\test";
 //string photoDirectoryPath = @"C:\Users\seanh\Downloads\test";
-ProcessType processType = ProcessType.FixDatesOnly;
+ProcessType processType = ProcessType.GoogleZip;
+string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is selected
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -53,6 +54,9 @@ switch (processType)
         if (photoDirectoryPath != videoDirectoryPath)
             DateHelper.FixDates(videoDirectoryPath);
         break;
+    case ProcessType.GoogleZip:
+        new GoogleZip().ProcessGoogleZip(videoDirectoryPath, photoDirectoryPath, googleZipFileName);
+        break;
     default:
         break;
 }
@@ -71,6 +75,10 @@ void Confirm()
             Console.WriteLine($"  From {dateRange.Item1.ToShortDateString()} to {dateRange.Item2.ToShortDateString()}");
         }
     }
+    if (processType == ProcessType.GoogleZip)
+    {
+        Console.WriteLine($"Zip File: {googleZipFileName}");
+    }
     Console.WriteLine("Press enter to continue, Ctrl + C to exit.");
     Console.ReadLine();
 }
@@ -84,5 +92,6 @@ enum ProcessType
     FixDatesOnly,
     FlattenVideos,
     FlattenPictures,
-    FlattenVideosAndPictures
+    FlattenVideosAndPictures,
+    GoogleZip
 }
