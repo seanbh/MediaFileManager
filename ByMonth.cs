@@ -8,7 +8,9 @@ public class ByMonth()
         DateHelper.FixDates(sourceDirectoryPath);
 
         Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"Grouping {sourceDirectoryPath} by month.");
+        Console.ResetColor();
 
         int byMonthCount = 0;
         int byMonthMovedCount = 0;
@@ -24,7 +26,9 @@ public class ByMonth()
                 if (!Directory.Exists(newFolderPath))
                 {
                     Directory.Move(folder, newFolderPath);
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Renamed folder {folder} to {newFolderPath}");
+                    Console.ResetColor();
                 }
             }
         }
@@ -44,27 +48,35 @@ public class ByMonth()
                 if (!Path.Exists(month)) Directory.CreateDirectory(monthPath);
 
                 File.Move(path, Path.Combine(monthPath, Path.GetFileName(path)));
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Moved: {Path.GetFileName(path)} with date {takenDate} to {monthPath}");
+                Console.ResetColor();
 
                 byMonthMovedCount++;
 
                 var filesLeftToMove = filesToMove - byMonthMovedCount;
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Files left to move: {filesLeftToMove}");
+                Console.ResetColor();
 
             }
             catch (Exception ex)
             {
                 couldNotMoveCount++;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error moving {path}: {ex.Message}");
+                Console.ResetColor();
             }
         }
 
 
         Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Magenta;
         Console.WriteLine("By Month Totals");
         Console.WriteLine($"File Count: {byMonthCount}");
         Console.WriteLine($"Moved Count: {byMonthMovedCount}");
         Console.WriteLine($"Could Not Move Count: {couldNotMoveCount}");
+        Console.ResetColor();
 
         return true;
     }

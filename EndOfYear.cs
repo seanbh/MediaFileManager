@@ -21,7 +21,9 @@ public class EndOfYear
     {
         if (!Path.Exists(sourceDirectoryPath))
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Path {sourceDirectoryPath} does not exist");
+            Console.ResetColor();
             return false;
         }
 
@@ -84,7 +86,9 @@ public class EndOfYear
                     }
                     else
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Could not move : {path} with date {mediaCreatedDate}");
+                        Console.ResetColor();
                         couldNotMoveCount++;
                     }
                 }
@@ -93,7 +97,9 @@ public class EndOfYear
             catch (Exception ex)
             {
                 couldNotMoveCount++;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error moving {path}: {ex.Message}");
+                Console.ResetColor();
             }
             finally
             {
