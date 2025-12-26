@@ -27,6 +27,14 @@ public class YearInPhotos()
             Console.ResetColor();
         }
 
+        // Create quarter subdirectories
+        string[] quarters = { "Q1", "Q2", "Q3", "Q4" };
+        foreach (var quarter in quarters)
+        {
+            string quarterPath = Path.Combine(destinationDirectoryPath, quarter);
+            Directory.CreateDirectory(quarterPath);
+        }
+
         // Get all files recursively and filter by directory name starting with 2 digits
         var files = Directory.GetFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories)
             .Where(f =>
@@ -52,11 +60,17 @@ public class YearInPhotos()
 
                 if (fileInfo.Length >= minFileSize)
                 {
-                    string destinationPath = Path.Combine(destinationDirectoryPath, fileInfo.Name);
+                    // Determine the quarter based on the directory name (first 2 digits = month)
+                    var directoryName = new DirectoryInfo(Path.GetDirectoryName(files[idx])).Name;
+                    int month = int.Parse(directoryName.Substring(0, 2));
+                    int quarter = (month - 1) / 3 + 1; // 1-3 = Q1, 4-6 = Q2, 7-9 = Q3, 10-12 = Q4
+
+                    string quarterDir = Path.Combine(destinationDirectoryPath, $"Q{quarter}");
+                    string destinationPath = Path.Combine(quarterDir, fileInfo.Name);
 
                     File.Copy(files[idx], destinationPath, overwrite: true);
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)})");
+                    Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)}) -> Q{quarter}");
                     Console.ResetColor();
                     copiedCount++;
                 }

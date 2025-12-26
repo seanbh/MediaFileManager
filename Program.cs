@@ -1,6 +1,6 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-string photoDirectoryPath = $@"F:\Pictures\2025";
+string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Stage\2025 in Pictures";
 ProcessType processType = ProcessType.RenameFiles;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
@@ -26,6 +26,9 @@ string[] renameFilesPaths = new[]
     @"G:\Videos\MPEG\2021-2030",
     @"G:\Videos\MPEG\2011-2020",
     @"G:\Videos\MPEG\Vacations - Photos",
+     @"E:\2021-2030",
+    @"E:\2011-2020",
+    @"E:\Vacations - Photos",
 }; // Array of paths to process
 var fileReplacements = new Dictionary<string, string>
 {
