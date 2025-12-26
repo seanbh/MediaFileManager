@@ -1,6 +1,6 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
-string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Vacations 2006 to 2025";
-string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Vacations 2006 to 2025";
+string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Christmas_Boys\Date Fix";
+string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Christmas_Boys\Date Fix";
 //string videoDirectoryPath = @"C:\Users\seanh\Downloads\test";
 //string photoDirectoryPath = @"C:\Users\seanh\Downloads\test";
 ProcessType processType = ProcessType.FixDatesOnly;
