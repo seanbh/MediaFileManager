@@ -63,13 +63,17 @@ switch (processType)
 
 void Confirm()
 {
+    Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine($"Process: {processType}");
+    Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine($"Videos Path: {videoDirectoryPath}");
     Console.WriteLine($"Photos Path: {photoDirectoryPath}");
     if (processType == ProcessType.EndOfYear)
     {
+        Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"Year: {year}");
         Console.WriteLine("Vacation Dates:");
+        Console.ForegroundColor = ConsoleColor.Magenta;
         foreach (var dateRange in vacationDates)
         {
             Console.WriteLine($"  From {dateRange.Item1.ToShortDateString()} to {dateRange.Item2.ToShortDateString()}");
@@ -77,9 +81,12 @@ void Confirm()
     }
     if (processType == ProcessType.GoogleZip)
     {
+        Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"Zip File: {googleZipFileName}");
     }
+    Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine("Press enter to continue, Ctrl + C to exit.");
+    Console.ResetColor();
     Console.ReadLine();
 }
 
