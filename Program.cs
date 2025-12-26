@@ -41,14 +41,14 @@ var fileReplacements = new Dictionary<string, string>
     { "Jul-Sep", "Vol 3" },
     { "Apr-Sept", "Vol 2-3" },
     { "Oct-Dec", "Vol 4" },
-    { "Vol 1_2006 - 2011", "Vacay Photos Vol 1" },
-    { "Vol 2_2012 - 2017", "Vacay Photos Vol 2" },
-    { "Vol 3_2018 - 2020", "Vacay Photos Vol 3" },
-    { "Vol 4_2021", "Vacay Photos Vol 4" },
-    { "Vol 5_2022", "Vacay Photos Vol 5" },
-    { "Vol 6_2023", "Vacay Photos Vol 6" },
-    { "Vol 7_2024", "Vacay Photos Vol 7" },
-    { "Vol 8_2025", "Vacay Photos Vol 8" },
+    { "Vol 1_2006 - 2011", "Vacay Photos Vol 1 (2006-2011)" },
+    { "Vol 2_2012 - 2017", "Vacay Photos Vol 2 (2012-2017)" },
+    { "Vol 3_2018 - 2020", "Vacay Photos Vol 3 (2018-2020)" },
+    { "Vol 4_2021", "Vacay Photos Vol 4 (2021)" },
+    { "Vol 5_2022", "Vacay Photos Vol 5 (2022)" },
+    { "Vol 6_2023", "Vacay Photos Vol 6 (2023)" },
+    { "Vol 7_2024", "Vacay Photos Vol 7 (2024)" },
+    { "Vol 8_2025", "Vacay Photos Vol 8 (2025)" },
     { " - ", " " }, // Remove ' - ' from filenames
 };
 // check: Get-ChildItem -Recurse -File
