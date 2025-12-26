@@ -32,7 +32,9 @@ public static class DateHelper
 
     public static void FixDates(string directoryPath)
     {
+        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"Fixing dates in {directoryPath}");
+        Console.ResetColor();
 
         foreach (string path in Directory.GetFiles(directoryPath))
         {
@@ -43,7 +45,9 @@ public static class DateHelper
                 // If filename already starts with yyyy-MM-dd_HH-mm-ss_, skip it.
                 if (Regex.IsMatch(fileNameOnly, "^\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}_"))
                 {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"Skipping {fileNameOnly}: already starts with timestamp");
+                    Console.ResetColor();
                     continue;
                 }
 
@@ -53,21 +57,27 @@ public static class DateHelper
                 {
                     File.SetCreationTime(path, mediaCreatedDate.Value);
                     File.SetLastWriteTime(path, mediaCreatedDate.Value);
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Fixed date for: {fileNameOnly} to {mediaCreatedDate.Value}");
 
                     string newFileName = $"{mediaCreatedDate.Value:yyyy-MM-dd_HH-mm-ss}_{fileNameOnly}";
                     string newFilePath = Path.Combine(directoryPath, newFileName);
                     File.Move(path, newFilePath);
                     Console.WriteLine($"Renamed {fileNameOnly} to {newFileName}");
+                    Console.ResetColor();
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Could not get date for {path}");
+                    Console.ResetColor();
                 }
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error fixing date for {path}: {ex.Message}");
+                Console.ResetColor();
                 throw;
             }
         }
@@ -75,7 +85,9 @@ public static class DateHelper
 
     public static void RemoveDatePrefix(string directoryPath)
     {
+        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"Removing date prefixes in {directoryPath}");
+        Console.ResetColor();
 
         foreach (string path in Directory.GetFiles(directoryPath))
         {
@@ -109,11 +121,15 @@ public static class DateHelper
                 }
 
                 File.Move(path, newPath);
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Renamed {fileNameOnly} to {Path.GetFileName(newPath)}");
+                Console.ResetColor();
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error removing prefix for {path}: {ex.Message}");
+                Console.ResetColor();
             }
         }
     }
@@ -139,7 +155,9 @@ public static class DateHelper
             process.Start();
             process.WaitForExit();
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Updated metadata for: {filePath}");
+            Console.ResetColor();
 
             var mediaCreatedDate = new FileInfo(filePath).CreationTime;
 
@@ -162,7 +180,9 @@ public static class DateHelper
 
                 var creation = DateTime.SpecifyKind(mediaCreatedDate, DateTimeKind.Unspecified);
                 var utcOffset = tz.GetUtcOffset(creation);
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Applying offset {utcOffset.TotalHours} hours for {tz.Id} at {creation} for {Path.GetFileName(filePath)}");
+                Console.ResetColor();
                 mediaCreatedDate = creation + utcOffset;
             }
 
@@ -170,7 +190,9 @@ public static class DateHelper
         }
         catch (Exception ex)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Error processing file {filePath}: {ex.Message}");
+            Console.ResetColor();
             return null;
         }
     }
@@ -191,13 +213,17 @@ public static class DateHelper
                 string value = System.Text.Encoding.ASCII.GetString(prop.Value).Trim('\0');
                 if (DateTime.TryParseExact(value, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Extracted Date from DateTakenId Property: {value}");
+                    Console.ResetColor();
                     return dt;
                 }
                 // Try a more general parse as a fallback
                 if (DateTime.TryParse(value, out dt))
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Extracted Date from DateTakenId Property: {value}");
+                    Console.ResetColor();
                     return dt;
                 }
             }
@@ -209,6 +235,4 @@ public static class DateHelper
 
         return null;
     }
-
-
 }
