@@ -24,6 +24,7 @@ public class FlattenHelper()
                 {
                     couldNotMoveCount++;
                     Console.WriteLine($"Error moving {path}: {ex.Message}");
+                    throw;
                 }
             }
 

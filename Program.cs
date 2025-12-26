@@ -3,7 +3,7 @@ string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THES
 string photoDirectoryPath = $@"F:\Pictures\2025";
 //string videoDirectoryPath = @"C:\Users\seanh\Downloads\test";
 //string photoDirectoryPath = @"C:\Users\seanh\Downloads\test";
-ProcessType processType = ProcessType.GoogleZip;
+ProcessType processType = ProcessType.VideosByMonth;
 string googleZipFileName = "Photos-3-001 (2).zip"; // Set this if GoogleZip is selected
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
