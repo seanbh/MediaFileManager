@@ -17,6 +17,15 @@ public class YearInPhotos()
             Console.WriteLine($"Created destination directory: {destinationDirectoryPath}");
             Console.ResetColor();
         }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            // delete existing contents
+            Console.WriteLine($"Destination directory already exists: {destinationDirectoryPath}. Deleting existing contents...");
+            Directory.Delete(destinationDirectoryPath, true); // true = recursive
+            Directory.CreateDirectory(destinationDirectoryPath);
+            Console.ResetColor();
+        }
 
         // Get all files recursively and filter by directory name starting with 2 digits
         var files = Directory.GetFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories)
