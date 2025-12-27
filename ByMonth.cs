@@ -16,7 +16,7 @@ public class ByMonth()
         int byMonthMovedCount = 0;
 
         // Rename all directories from MMMM to MM_MMMM
-        foreach (string folder in Directory.GetDirectories(sourceDirectoryPath))
+        foreach (string folder in Directory.GetDirectories(sourceDirectoryPath).Where(d => !Constants.IgnoredFolders.Any(ig => ig.Equals(Path.GetFileName(d)))))
         {
             DateTime folderDate;
             if (DateTime.TryParseExact(Path.GetFileName(folder), "MMMM", null, System.Globalization.DateTimeStyles.None, out folderDate))

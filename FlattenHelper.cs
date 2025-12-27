@@ -11,7 +11,7 @@ public class FlattenHelper()
         var fileCount = 0;
         var fileMovedCount = 0;
 
-        foreach (string folder in Directory.GetDirectories(sourceDirectoryPath))
+        foreach (string folder in Directory.GetDirectories(sourceDirectoryPath).Where(d => !Constants.IgnoredFolders.Any(ig => ig.Equals(Path.GetFileName(d)))))
         {
             foreach (string path in Directory.GetFiles(folder))
             {
