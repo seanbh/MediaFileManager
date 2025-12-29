@@ -18,7 +18,19 @@ public class FlattenHelper()
                 try
                 {
                     fileCount++;
-                    File.Move(path, Path.Combine(sourceDirectoryPath, Path.GetFileName(path)));
+                    string destinationPath = Path.Combine(sourceDirectoryPath, Path.GetFileName(path));
+
+                    // If file exists, add timestamp to filename
+                    if (File.Exists(destinationPath))
+                    {
+                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+                        string extension = Path.GetExtension(path);
+                        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
+                        string newFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
+                        destinationPath = Path.Combine(sourceDirectoryPath, newFileName);
+                    }
+
+                    File.Move(path, destinationPath);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"Moved: {Path.GetFileName(path)} to {sourceDirectoryPath}");
                     Console.ResetColor();

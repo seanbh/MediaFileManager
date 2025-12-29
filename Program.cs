@@ -1,7 +1,7 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
-string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
+string videoDirectoryPath = @$"G:\Videos\Video Projects\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2017";
 string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Stage\Test";
-ProcessType processType = ProcessType.PicturesByMonth;
+ProcessType processType = ProcessType.VideosByMonth;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
