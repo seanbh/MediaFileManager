@@ -1,7 +1,7 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"G:\Videos\Video Projects\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2017";
 string photoDirectoryPath = $@"C:\Users\seanh\Pictures\Video Projects\Stage\Test";
-ProcessType processType = ProcessType.VideosByMonth;
+ProcessType processType = ProcessType.RenameFiles;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
@@ -20,38 +20,12 @@ string googleZipFileName = "Photos-3-001 (3).zip"; // Set this if GoogleZip is s
 /*****SET THESE BELOW IF RenameFiles IS SELECTED********/
 string[] renameFilesPaths = new[]
 {
-    @"F:\Videos\MPEG\2021-2030",
-    @"F:\Videos\MPEG\2011-2020",
-    @"F:\Videos\MPEG\Vacations - Photos",
-    @"G:\Videos\MPEG\2021-2030",
-    @"G:\Videos\MPEG\2011-2020",
-    @"G:\Videos\MPEG\Vacations - Photos",
-     @"E:\2021-2030",
-    @"E:\2011-2020",
-    @"E:\Vacations - Photos",
+    @"H:\Videos\MPEG\2021-2030",
+    @"H:\Videos\MPEG\2011-2020"
 }; // Array of paths to process
 var fileReplacements = new Dictionary<string, string>
 {
     { "Uncut IV", "Vol 4" },
-    { "Uncut III", "Vol 3" },
-    { "Uncut II", "Vol 2" },
-    { "Vol 1I", "Vol 2" },
-    { "Vol 2I", "Vol 3" },
-    { "Vol 1V", "Vol 4" },
-    { "Uncut I", "Vol 1" },
-    { "Jan-Mar", "Vol 1" },
-    { "Apr-Jun", "Vol 2" },
-    { "Jul-Sep", "Vol 3" },
-    { "Apr-Sept", "Vol 2-3" },
-    { "Oct-Dec", "Vol 4" },
-    { "Vol 1_2006 - 2011", "Vacay Photos Vol 1 (2006-2011)" },
-    { "Vol 2_2012 - 2017", "Vacay Photos Vol 2 (2012-2017)" },
-    { "Vol 3_2018 - 2020", "Vacay Photos Vol 3 (2018-2020)" },
-    { "Vol 4_2021", "Vacay Photos Vol 4 (2021)" },
-    { "Vol 5_2022", "Vacay Photos Vol 5 (2022)" },
-    { "Vol 6_2023", "Vacay Photos Vol 6 (2023)" },
-    { "Vol 7_2024", "Vacay Photos Vol 7 (2024)" },
-    { "Vol 8_2025", "Vacay Photos Vol 8 (2025)" },
     { " - ", " " }, // Remove ' - ' from filenames
 };
 // check: Get-ChildItem -Recurse -File
