@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 public class YearInPhotos()
 {
-    public void CopyNthFile(string sourceDirectoryPath, int skip)
+    public void CopyNthFile(string sourceDirectoryPath, int skip, int minuteInterval)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         var destinationDirectoryPath = Path.Combine(sourceDirectoryPath, "YearInPhotos");
@@ -53,7 +53,6 @@ public class YearInPhotos()
         int copiedCount = 0;
         const long minFileSize = 250 * 1024; // 250 KB in bytes
         DateTime lastFileDate = DateTime.MinValue;
-        int minuteInterval = 15;
 
         for (int idx = 0; idx < files.Length; idx += skip)
         {
