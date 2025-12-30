@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 public class YearInPhotos()
 {
-    public void CopyNthFile(string sourceDirectoryPath, int skip, int minuteInterval)
+    public void CopyNthFile(string sourceDirectoryPath, int skip, int minuteInterval, bool dryRun = false)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         var destinationDirectoryPath = Path.Combine(sourceDirectoryPath, "YearInPhotos");
@@ -74,7 +74,10 @@ public class YearInPhotos()
                         string quarterDir = Path.Combine(destinationDirectoryPath, $"Q{quarter}");
                         string destinationPath = Path.Combine(quarterDir, fileInfo.Name);
 
-                        File.Copy(files[idx], destinationPath, overwrite: true);
+                        if (!dryRun)
+                        {
+                            File.Copy(files[idx], destinationPath, overwrite: true);
+                        }
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)}) -> Q{quarter}");
                         Console.ResetColor();

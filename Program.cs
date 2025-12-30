@@ -71,7 +71,7 @@ switch (processType)
         new GoogleZip().ProcessGoogleZip(videoDirectoryPath, photoDirectoryPath, googleZipFileName);
         break;
     case ProcessType.YearInPhotos:
-        new YearInPhotos().CopyNthFile(photoDirectoryPath, skip: 1, minuteInterval: 15);
+        new YearInPhotos().CopyNthFile(photoDirectoryPath, skip: 1, minuteInterval: 15, dryRun: false);
         break;
     case ProcessType.RenameFiles:
         new RenameFiles().RenameFilesInPaths(renameFilesPaths, fileReplacements);
