@@ -35,12 +35,13 @@ public class YearInPhotos()
             Directory.CreateDirectory(quarterPath);
         }
 
-        // Get all files recursively and filter by directory name starting with 2 digits
+        // Get all files recursively and filter by directory name starting with 2 digits and file extension is jpg/jpeg
         var files = Directory.GetFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories)
             .Where(f =>
             {
                 var directoryName = new DirectoryInfo(Path.GetDirectoryName(f)).Name;
-                return Regex.IsMatch(directoryName, @"^\d{2}");
+                var extension = Path.GetExtension(f).ToLower();
+                return Regex.IsMatch(directoryName, @"^\d{2}") && (extension == ".jpg" || extension == ".jpeg");
             })
             .OrderBy(f => f)
             .ToArray();
