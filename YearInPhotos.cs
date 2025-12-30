@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 public class YearInPhotos()
 {
-    public void CopyNthFile(string sourceDirectoryPath, int skip = 3)
+    public void CopyNthFile(string sourceDirectoryPath, int skip)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         var destinationDirectoryPath = Path.Combine(sourceDirectoryPath, "YearInPhotos");
@@ -52,6 +52,8 @@ public class YearInPhotos()
 
         int copiedCount = 0;
         const long minFileSize = 250 * 1024; // 250 KB in bytes
+        DateTime lastFileDate = DateTime.MinValue;
+        int minuteInterval = 15;
 
         for (int idx = 0; idx < files.Length; idx += skip)
         {
@@ -61,19 +63,32 @@ public class YearInPhotos()
 
                 if (fileInfo.Length >= minFileSize)
                 {
-                    // Determine the quarter based on the directory name (first 2 digits = month)
-                    var directoryName = new DirectoryInfo(Path.GetDirectoryName(files[idx])).Name;
-                    int month = int.Parse(directoryName.Substring(0, 2));
-                    int quarter = (month - 1) / 3 + 1; // 1-3 = Q1, 4-6 = Q2, 7-9 = Q3, 10-12 = Q4
+                    DateTime fileDate = DateHelper.GetFileCreationDate(files[idx]);
 
-                    string quarterDir = Path.Combine(destinationDirectoryPath, $"Q{quarter}");
-                    string destinationPath = Path.Combine(quarterDir, fileInfo.Name);
+                    if (fileDate.Subtract(lastFileDate).TotalMinutes > minuteInterval)
+                    {
+                        // Determine the quarter based on the directory name (first 2 digits = month)
+                        var directoryName = new DirectoryInfo(Path.GetDirectoryName(files[idx])).Name;
+                        int month = int.Parse(directoryName.Substring(0, 2));
+                        int quarter = (month - 1) / 3 + 1; // 1-3 = Q1, 4-6 = Q2, 7-9 = Q3, 10-12 = Q4
 
-                    File.Copy(files[idx], destinationPath, overwrite: true);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)}) -> Q{quarter}");
-                    Console.ResetColor();
-                    copiedCount++;
+                        string quarterDir = Path.Combine(destinationDirectoryPath, $"Q{quarter}");
+                        string destinationPath = Path.Combine(quarterDir, fileInfo.Name);
+
+                        File.Copy(files[idx], destinationPath, overwrite: true);
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)}) -> Q{quarter}");
+                        Console.ResetColor();
+                        copiedCount++;
+
+                        lastFileDate = fileDate;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Skipped (less than {minuteInterval} minutes since previous): {files[idx]}");
+                        Console.ResetColor();
+                    }
                 }
                 else
                 {
