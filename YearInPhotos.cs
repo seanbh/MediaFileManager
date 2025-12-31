@@ -5,7 +5,7 @@ public class YearInPhotos()
     public void CopyNthFile(string sourceDirectoryPath, int skip, int minuteInterval, bool dryRun = false)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        var destinationDirectoryPath = Path.Combine(sourceDirectoryPath, "YearInPhotos");
+        var destinationDirectoryPath = Path.Combine(@"C:\Users\seanh\Pictures\Video Projects\Stage\YearInPhotos", Path.GetFileName(sourceDirectoryPath));
         Console.WriteLine($"Copying every {skip}th file from {sourceDirectoryPath} to {destinationDirectoryPath}");
         Console.ResetColor();
 
