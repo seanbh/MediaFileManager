@@ -63,7 +63,10 @@ public class YearInPhotos()
                 {
                     DateTime fileDate = DateHelper.GetFileCreationDate(files[idx]);
 
-                    if (fileDate.Subtract(lastFileDate).TotalMinutes > minuteInterval)
+                    // smaller interval on Christmas Day
+                    var minuteIntervalToUse = fileDate.Month == 12 && fileDate.Day == 25 ? 2 : minuteInterval;
+
+                    if (fileDate.Subtract(lastFileDate).TotalMinutes > minuteIntervalToUse)
                     {
                         // Switch to next volume if counter reaches 300
                         if (volumeCounter >= picturesPerVolume)
