@@ -81,3 +81,5 @@ public class ByMonth()
         return true;
     }
 }
+
+//Get-ChildItem E:\ -Directory -Recurse -Force -ErrorAction SilentlyContinue | % { [pscustomobject]@{ Folder=$_.FullName; FileCount=(Get-ChildItem $_.FullName -File -Recurse -Force -ErrorAction SilentlyContinue).Count } } | ft -AutoSize -Wrap
