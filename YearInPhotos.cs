@@ -64,7 +64,7 @@ public class YearInPhotos()
                     DateTime fileDate = DateHelper.GetFileCreationDate(files[idx]);
 
                     // smaller interval on Christmas Day
-                    var minuteIntervalToUse = fileDate.Month == 12 && fileDate.Day == 25 ? 2 : minuteInterval;
+                    var minuteIntervalToUse = fileDate.Month == 12 && fileDate.Day == 25 ? 1 : minuteInterval;
 
                     if (fileDate.Subtract(lastFileDate).TotalMinutes > minuteIntervalToUse)
                     {
