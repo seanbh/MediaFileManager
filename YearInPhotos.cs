@@ -27,13 +27,9 @@ public class YearInPhotos()
             Console.ResetColor();
         }
 
-        // Create quarter subdirectories
-        string[] quarters = { "Q1", "Q2", "Q3", "Q4" };
-        foreach (var quarter in quarters)
-        {
-            string quarterPath = Path.Combine(destinationDirectoryPath, quarter);
-            Directory.CreateDirectory(quarterPath);
-        }
+        // Create initial volume directory (volumes will be created dynamically as needed)
+        string vol1Path = Path.Combine(destinationDirectoryPath, "Vol1");
+        Directory.CreateDirectory(vol1Path);
 
         // Get all files recursively and filter by directory name starting with 2 digits and file extension is jpg/jpeg
         var files = Directory.GetFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories)
@@ -51,7 +47,10 @@ public class YearInPhotos()
         Console.ResetColor();
 
         int copiedCount = 0;
+        int volumeCounter = 0; // Counter for files in current volume
+        int currentVolume = 1; // Current volume
         const long minFileSize = 250 * 1024; // 250 KB in bytes
+        const int picturesPerVolume = 300; // Fixed number of pictures per volume
         DateTime lastFileDate = DateTime.MinValue;
 
         for (int idx = 0; idx < files.Length; idx += skip)
@@ -66,22 +65,31 @@ public class YearInPhotos()
 
                     if (fileDate.Subtract(lastFileDate).TotalMinutes > minuteInterval)
                     {
-                        // Determine the quarter based on the directory name (first 2 digits = month)
-                        var directoryName = new DirectoryInfo(Path.GetDirectoryName(files[idx])).Name;
-                        int month = int.Parse(directoryName.Substring(0, 2));
-                        int quarter = (month - 1) / 3 + 1; // 1-3 = Q1, 4-6 = Q2, 7-9 = Q3, 10-12 = Q4
+                        // Switch to next volume if counter reaches 300
+                        if (volumeCounter >= picturesPerVolume)
+                        {
+                            currentVolume++;
+                            volumeCounter = 0;
+                        }
 
-                        string quarterDir = Path.Combine(destinationDirectoryPath, $"Q{quarter}");
-                        string destinationPath = Path.Combine(quarterDir, fileInfo.Name);
+                        // Create volume directory dynamically if it doesn't exist
+                        string volumeDir = Path.Combine(destinationDirectoryPath, $"Vol{currentVolume}");
+                        if (!Directory.Exists(volumeDir))
+                        {
+                            Directory.CreateDirectory(volumeDir);
+                        }
+
+                        string destinationPath = Path.Combine(volumeDir, fileInfo.Name);
 
                         if (!dryRun)
                         {
                             File.Copy(files[idx], destinationPath, overwrite: true);
                         }
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)}) -> Q{quarter}");
+                        Console.WriteLine($"Copied: {files[idx]} ({FormatFileSize(fileInfo.Length)}) -> Vol{currentVolume}");
                         Console.ResetColor();
                         copiedCount++;
+                        volumeCounter++;
 
                         lastFileDate = fileDate;
                     }
