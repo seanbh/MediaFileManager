@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 public class YearInPhotos()
 {
-    public void CopyNthFile(string sourceDirectoryPath, int skip, int minuteInterval, bool dryRun = false)
+    public void Process(string sourceDirectoryPath, int skip, int minuteInterval, bool dryRun = false)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
         var destinationDirectoryPath = Path.Combine(@"C:\Users\seanh\Pictures\Video Projects\Stage\YearInPhotos", Path.GetFileName(sourceDirectoryPath));
@@ -35,9 +35,10 @@ public class YearInPhotos()
         var files = Directory.GetFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories)
             .Where(f =>
             {
-                var directoryName = new DirectoryInfo(Path.GetDirectoryName(f)).Name;
+                var directoryInfo = new DirectoryInfo(Path.GetDirectoryName(f));
+                var directoryName = directoryInfo.Name;
                 var extension = Path.GetExtension(f).ToLower();
-                return Regex.IsMatch(directoryName, @"^\d{2}") && (extension == ".jpg" || extension == ".jpeg");
+                return Regex.IsMatch(directoryName, @"^\d{2}") && !Constants.IgnoredFolders.Any(ig => directoryInfo.FullName.Contains(ig)) && (extension == ".jpg" || extension == ".jpeg");
             })
             .OrderBy(f => f)
             .ToArray();
@@ -65,8 +66,8 @@ public class YearInPhotos()
 
                     // smaller interval on Christmas Day
                     var minuteIntervalToUse = fileDate.Month == 12 && fileDate.Day == 25 ? 1 : minuteInterval;
-
-                    if (fileDate.Subtract(lastFileDate).TotalMinutes > minuteIntervalToUse)
+                    var totalMinutes = fileDate.Subtract(lastFileDate).TotalMinutes;
+                    if (totalMinutes > minuteIntervalToUse || totalMinutes < 0)
                     {
                         // Switch to next volume if counter reaches 300
                         if (volumeCounter >= picturesPerVolume)

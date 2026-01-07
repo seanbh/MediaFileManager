@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 
 public static class DateHelper
 {
-    public static DateTime GetFileCreationDate(string filePath)
+    public static DateTime? GetDate(string path)
     {
         try
         {
-            string fileName = Path.GetFileName(filePath);
+            string fileName = Path.GetFileName(path);
 
             // Pattern: yyyy-MM-dd_HH-mm-ss_
             var m = Regex.Match(fileName, "^(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})_");
@@ -21,13 +21,19 @@ public static class DateHelper
                     return dt;
                 }
             }
+
         }
         catch
         {
-            // Ignore parse errors and fall back to file system timestamp
+            // Ignore parse errors and fall back
         }
 
-        return File.GetCreationTime(filePath);
+        return GetDateTaken(path) ?? GetDateUsingExif(path);
+    }
+
+    public static DateTime GetFileCreationDate(string filePath)
+    {
+        return GetDate(filePath) ?? File.GetCreationTime(filePath);
     }
 
     public static void FixDates(string directoryPath)
@@ -51,7 +57,7 @@ public static class DateHelper
                     continue;
                 }
 
-                DateTime? mediaCreatedDate = GetDateTaken(path) ?? GetDateUsingExif(path);
+                DateTime? mediaCreatedDate = GetDate(path);
 
                 if (mediaCreatedDate.HasValue)
                 {
