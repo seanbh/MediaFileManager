@@ -50,7 +50,7 @@ public class YearInPhotos()
         int copiedCount = 0;
         int volumeCounter = 0; // Counter for files in current volume
         int currentVolume = 1; // Current volume
-        const long minFileSize = 250 * 1024; // 250 KB in bytes
+        const long minFileSize = 25 * 1024; // 250 KB in bytes
         const int picturesPerVolume = 300; // Fixed number of pictures per volume
         DateTime lastFileDate = DateTime.MinValue;
 

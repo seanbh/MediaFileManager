@@ -11,8 +11,8 @@ public static class DateHelper
         {
             string fileName = Path.GetFileName(path);
 
-            // Pattern: yyyy-MM-dd_HH-mm-ss_
-            var m = Regex.Match(fileName, "^(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})_");
+            // Pattern: yyyy-MM-dd_HH-mm-ss
+            var m = Regex.Match(fileName, "^(\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2})");
             if (m.Success)
             {
                 var ts = m.Groups[1].Value;
@@ -20,6 +20,11 @@ public static class DateHelper
                 {
                     return dt;
                 }
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Filename {fileName} does not match date prefix pattern.");
             }
 
         }

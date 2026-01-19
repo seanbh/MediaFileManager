@@ -1,6 +1,6 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-string photoDirectoryPath = $@"F:\Pictures\2022";
+string photoDirectoryPath = $@"F:\Pictures\2020";
 ProcessType processType = ProcessType.YearInPhotos;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
@@ -71,7 +71,7 @@ switch (processType)
         new GoogleZip().ProcessGoogleZip(videoDirectoryPath, photoDirectoryPath, googleZipFileName);
         break;
     case ProcessType.YearInPhotos:
-        new YearInPhotos().Process(photoDirectoryPath, skip: 1, minuteInterval: 2, dryRun: true);
+        new YearInPhotos().Process(photoDirectoryPath, skip: 1, minuteInterval: 0, dryRun: true);
         break;
     case ProcessType.RenameFiles:
         new RenameFiles().RenameFilesInPaths(renameFilesPaths, fileReplacements);
