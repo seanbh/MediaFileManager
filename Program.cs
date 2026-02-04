@@ -1,6 +1,6 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
 string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-string photoDirectoryPath = $@"F:\Pictures\2020";
+string photoDirectoryPath = $@"F:\Pictures\2018";
 ProcessType processType = ProcessType.YearInPhotos;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
