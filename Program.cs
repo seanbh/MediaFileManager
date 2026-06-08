@@ -1,17 +1,15 @@
 ﻿/*****ALWAYS SET THE VARIABLES BELOW THIS LINE********/
-string videoDirectoryPath = @$"C:\Users\seanh\Pictures\Video Projects\Stage\THESE_HAVE_BEEN_COMBINED_INTO_MPEGS\2025";
-string photoDirectoryPath = $@"F:\Pictures\2018";
-ProcessType processType = ProcessType.YearInPhotos;
+string videoDirectoryPath = @$"F:\Pictures\2026";
+string photoDirectoryPath = $@"F:\Pictures\2026";
+ProcessType processType = ProcessType.PicturesByMonth;
 /******ALWAYS SET THE VARIABLES ABOVE THIS LINE********/
 
 /*****SET THESE BELOW IF EndOfYear IS SELECTED********/
-int year = 2025; // you still have to change vacation dates manually
+int year = 2026; // you still have to change vacation dates manually
 // Define the date ranges for deletion
 var vacationDates = new List<Tuple<DateTime, DateTime>>()
 {
-    new(new(year, 1, 24), new(year, 1, 29)),
-    new(new(year, 6, 18), new(year, 7, 2)),
-    new(new(year, 11, 13), new(year, 11, 16))
+    new(new(year, 5, 30), new(year, 6, 7))
 };
 /******SET THESE ABOVE IF EndOfYear IS SELECTED********/
 
